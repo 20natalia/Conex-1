@@ -1,0 +1,15 @@
+﻿
+body {
+    background-color: lightblue;
+}
+
+label {
+    color: white;
+    text-align: center;
+}
+
+button {
+    font-family: Verdana;
+    font-size: 72;
+}
+
