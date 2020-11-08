@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +13,7 @@ namespace Conex_1
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new Conex_1.MainPage();
         }
 
         protected override void OnStart()

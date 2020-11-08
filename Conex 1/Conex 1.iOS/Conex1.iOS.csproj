@@ -123,14 +123,17 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views.Forms">
+      <Version>2.80.2</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.1141" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Conex 1\Conex 1.csproj">
-      <Project>{840F5B7F-4FE4-4CF3-92DA-C36E64F2D963}</Project>
-      <Name>Conex 1</Name>
+    <ProjectReference Include="..\Conex 1\Conex1.csproj">
+      <Project>{F44AF13E-7897-4812-B652-3970797D6A87}</Project>
+      <Name>Conex1</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -4,12 +4,12 @@ body {
 }
 
 label {
-    color: white;
+    color: darkblue;
     text-align: center;
 }
 
 button {
     font-family: Verdana;
-    font-size: 72;
+    font-size: 14;
 }
 
