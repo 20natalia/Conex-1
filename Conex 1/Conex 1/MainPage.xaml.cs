@@ -9,6 +9,9 @@ using Xamarin.Forms;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 
+using Conex1;
+using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
+
 namespace Conex_1
 {
     public partial class MainPage : ContentPage
@@ -50,7 +53,7 @@ namespace Conex_1
             StrokeCap = SKStrokeCap.Round
         };
 
-        SKPaint greyFillPaint= new SKPaint
+        SKPaint greyFillPaint = new SKPaint
         {
             Style = SKPaintStyle.Fill,
             Color = SKColors.Gray,
@@ -67,7 +70,7 @@ namespace Conex_1
         public MainPage()
         {
             InitializeComponent();
-            
+
             // Make cat ear path
             catEarPath.MoveTo(7, -10);
             catEarPath.LineTo(0, 75);
@@ -89,18 +92,18 @@ namespace Conex_1
             // Make cat tail path
             catTailPath.MoveTo(0, 100);
             catTailPath.CubicTo(50, 200, 0, 250, -50, 200);
-            
 
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f/60), () =>
-            {
-                canvasView.InvalidateSurface();
-                return true;
-            });
-            
+
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 60), () =>
+              {
+                  canvasView.InvalidateSurface();
+                  return true;
+              });
+
         }
 
-       
+
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -115,7 +118,7 @@ namespace Conex_1
             // Set Transforms
 
             canvas.Translate(width / 2, height / 2);
-            canvas.Scale(Math.Min(width / 210f, height /520f));
+            canvas.Scale(Math.Min(width / 210f, height / 520f));
 
             // Date Time
             DateTime dateTime = DateTime.Now;
@@ -150,13 +153,13 @@ namespace Conex_1
 
                 canvas.Restore();
             }
-                // Draw tail
-                canvas.DrawPath(catTailPath, blackStrokePaint);
+            // Draw tail
+            canvas.DrawPath(catTailPath, blackStrokePaint);
 
-            
+
 
             // Clock Background
-            canvas.DrawCircle (0, 0, 100, blackFillPaint);
+            canvas.DrawCircle(0, 0, 100, blackFillPaint);
 
             // Hour and Minute Marks
             for (int angle = 0; angle < 360; angle += 6)
@@ -170,7 +173,15 @@ namespace Conex_1
             canvas.DrawPath(hourHandPath, greyFillPaint);
             canvas.DrawPath(hourHandPath, whiteStrokePaint);
             canvas.Restore();
-            
+
+            if (dateTime.Minute == 0)
+            {
+                // await CrossMediaManager.Current.Play("Cat-Street-Meow_Wav.wav");
+
+                // var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.Current;
+                //  player.Load("Cat-Street-Meow-Wav.wav");
+            }
+
             // Minute Hand
             canvas.Save();
             canvas.RotateDegrees(6 * dateTime.Minute + dateTime.Second / 10f);
@@ -180,17 +191,18 @@ namespace Conex_1
 
             // Second Hand
             canvas.Save();
-            float seconds = dateTime.Second + dateTime.Millisecond /1000f;
+            float seconds = dateTime.Second + dateTime.Millisecond / 1000f;
             canvas.RotateDegrees(6 * seconds);
             canvas.DrawLine(0, 10, 0, -80, whiteStrokePaint);
             canvas.Restore();
 
         }
-    
 
-    private void SettingsClicked(object sender, EventArgs e)
+
+
+        private void SettingsClicked(object sender, EventArgs e)
         {
-           // InnerFrame.Navigate(typeid(FeedbackPage));
+            // InnerFrame.Navigate(typeid(FeedbackPage));
         }
 
         void AchievementsClicked(object sender, EventArgs e)
@@ -199,7 +211,12 @@ namespace Conex_1
             {
                 File.Delete(_fileName);
             }
-            
+
         }
+
     }
+
+   
+
+
 }

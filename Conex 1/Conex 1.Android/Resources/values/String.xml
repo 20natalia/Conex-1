@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <string name ="playAudioText"> Play Audio </string>
+  <string name ="app_name">PlayAudio</string>
+
+</resources>
+    <!-- https://go.microsoft.com/fwlink/?linkid=2124038
+    <issue id="HardcodedText" severity="error">
+        <ignore path="Resources\layout\content_main.xml" />
+    </issue>
+    -->
+

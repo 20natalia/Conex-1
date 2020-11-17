@@ -5,13 +5,14 @@
              xmlns:local="clr-namespace:Conex_1"
              x:Class="Conex_1.MainPage">
     <ContentPage.Resources>
-         <StyleSheet Source="Stylesheet1.css" /> 
+        <!--<StyleSheet Source="Stylesheet1.css" />   -->
     </ContentPage.Resources>
 
     <skia:SKCanvasView x:Name="canvasView" 
                        PaintSurface="canvasView_PaintSurface" />
 
-
+    
+    
     <!-- <StackLayout Margin="10, 35, 10, 100" >
               
         <Grid>
