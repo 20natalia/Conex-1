@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Conex1.FramePage">
+    <ContentPage.Content>
+        <Frame BorderColor="Orange"
+               CornerRadius="10"
+               Padding="8">
+            <StackLayout>
+                <Label Text="Card Example"
+                 FontSize="Medium"
+                       FontAttributes="Bold" />
+                <BoxView Color="Gray"
+                         HeightRequest="2"
+                         HorizontalOptions="Fill" />
+                <Label Text="Frames can wrap more complex layouts to create more complex UI components" />
+            </StackLayout>
+            
+        </Frame>
+    </ContentPage.Content>
+</ContentPage>

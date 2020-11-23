@@ -23,6 +23,7 @@ using TouchTracking;
         // paths finished/ the finger was lifted 
         List<SKPath> completedPaths = new List<SKPath>();
 
+        
         SKPaint paint = new SKPaint
         {
             Style = SKPaintStyle.Stroke,
@@ -64,6 +65,12 @@ using TouchTracking;
                 case TouchActionType.Released:
                     if (inProgressPaths.ContainsKey(args.Id))
                     {
+                        // My Random Color Implementation
+                        Random rand = new Random();
+                        Byte[] rgb = new Byte[3];
+                        rand.NextBytes(rgb);
+                        paint.Color = new SKColor(rgb[0], rgb[1], rgb[2]);
+
                         completedPaths.Add(inProgressPaths[args.Id]);
                         inProgressPaths.Remove(args.Id);
                         canvasView.InvalidateSurface();
@@ -100,11 +107,20 @@ using TouchTracking;
             foreach (SKPath path in completedPaths)
             {
                 canvas.DrawPath(path, paint);
+
+              
             }
             foreach (SKPath path in inProgressPaths.Values)
             {
                 canvas.DrawPath(path, paint);
+
+                if(completedPaths.Contains(path))
+                {
+                    canvas.DrawCircle(path.LastPoint.X, path.LastPoint.Y, 50, paint);
+                }
             }
         }
     }
 }
+
+
