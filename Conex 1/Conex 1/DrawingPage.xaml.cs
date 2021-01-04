@@ -19,21 +19,27 @@ using TouchTracking;
     {
 
         // paths being drawn by more than one figher, key = touch ID accompanies each touch event
-        Dictionary<long, SKPath> inProgressPaths = new Dictionary<long, SKPath>();
-
-      
+        SKPath inProgressPath;    
 
         private class Circle {
             public SKPoint center;
             public bool fill;
             public Circle(SKPoint c, bool f = false) { center = c; fill = f; }
-           
+        };
+
+        private class Completed
+        {
+            public SKPath path;
+            public int player;
+            public Completed(SKPath p, int k) { path = p; player = k; }
         };
 
         // paths finished/ the finger was lifted 
-        List<SKPath> completedPaths = new List<SKPath>();
+        List<Completed> completedPaths;
         List<Circle> circleList;
+        List<Circle> circleIntersections = new List<Circle>();
         int radius = 0;
+        Boolean turn = true;
 
         SKPaint paint = new SKPaint
         {
@@ -43,6 +49,25 @@ using TouchTracking;
             StrokeCap = SKStrokeCap.Round,
             StrokeJoin = SKStrokeJoin.Round
         };
+
+        SKPaint paintPlayer1 = new SKPaint
+        {
+            Style = SKPaintStyle.Stroke,
+            Color = SKColors.Blue,
+            StrokeWidth = 10,
+            StrokeCap = SKStrokeCap.Round,
+            StrokeJoin = SKStrokeJoin.Round
+        };
+
+        SKPaint paintPlayer2 = new SKPaint
+        {
+            Style = SKPaintStyle.Stroke,
+            Color = SKColors.PaleVioletRed,
+            StrokeWidth = 10,
+            StrokeCap = SKStrokeCap.Round,
+            StrokeJoin = SKStrokeJoin.Round
+        };
+
 
         SKPaint paintAfter = new SKPaint
         {
@@ -77,62 +102,108 @@ using TouchTracking;
             InitializeComponent();
         }
 
+        private bool lineCross(SKPoint loc, SKPoint vec, SKPoint c)
+        {
+            if (SKPoint.Distance(loc, c) < radius) return true;
+            SKPoint vc = c - loc;
+            float d = vc.X * vec.X + vc.Y * vec.Y;
+            if (d < 0) return false;
+            float v = vec.LengthSquared;
+            if (d >= v) return false;
+            float s = vc.X * vec.Y - vc.Y * vec.X;
+            if (s * s < radius * radius * v) return true; 
+            return false;
+        }
+
         void OnTouchEffectAction(object sender, TouchActionEventArgs args)
         {
-            switch (args.Type)
+            SKPoint point = ConvertToPixel(args.Location);
+            OnTouchEffectAction(args.Type, point);
+        }
+
+        private void OnTouchEffectAction(TouchActionType type, SKPoint point)
+        {
+            switch (type)
             {
                 case TouchActionType.Pressed:
-                    if (!inProgressPaths.ContainsKey(args.Id))
+                    if (completedPaths != null)
                     {
-                        SKPath path = new SKPath();
-                        path.MoveTo(ConvertToPixel(args.Location));
-                        inProgressPaths.Add(args.Id, path);
-                        canvasView.InvalidateSurface();
+                        Completed last = completedPaths.Last();
+                        if (SKPoint.Distance(last.path.LastPoint, point) > radius / 2) { break; }
                     }
+                    inProgressPath = new SKPath();
+                    inProgressPath.MoveTo(point);
+                    canvasView.InvalidateSurface();
                     break;
 
                 case TouchActionType.Moved:
-                    if (inProgressPaths.ContainsKey(args.Id))
-                    {
-                        // adding index of circle which was touched/passed
-                        SKPoint loc = ConvertToPixel(args.Location);
-                        foreach(Circle c in circleList) {
+                    if (inProgressPath == null) break;
+                    inProgressPath.LineTo(point);
+                    // adding index of circle which was touched/passed
+                    SKPoint vec = inProgressPath.LastPoint - point;
+                    bool cross = false;
+                    foreach (Circle c in circleList) {
                         //for (int i=0; i<circleList.Count(); ++i) {
-                            //Circle c = circleList[i];
-                            if (SKPoint.Distance(loc, c.center) < radius)
+                        //Circle c = circleList[i];
+                        if (c.fill) continue;
+                        if (lineCross(point, vec, c.center))
+                        {
+                            int ind = circleList.IndexOf(c);
+                            if (ind == 0 || circleList.ElementAt(ind - 1).fill)
                             {
                                 c.fill = true;
+                                OnTouchEffectAction(TouchActionType.Released, point);
+                                turn = !turn;
+                                OnTouchEffectAction(TouchActionType.Pressed, point);
+                                cross = true;
                                 break;
+
                             }
-                            
+                            break;
+
                         }
+
+                    }
+                    if (!cross) {
+                        canvasView.InvalidateSurface();
+                    }
+
+/*
+                    foreach (SKPath paths in completedPaths)
+                    {
+                        SKPoint loc = ConvertToPixel(args.Location);
+                        if (paths.Contains(loc.X, loc.Y))
+                        {
+                            SKPoint s = new SKPoint();
+                            s.X = loc.X;
+                            s.Y = loc.Y;
+                            circleIntersections.Add(new Circle(s, true));
+
+                        }
+
                         SKPath path = inProgressPaths[args.Id];
                         path.LineTo(ConvertToPixel(args.Location));
                         canvasView.InvalidateSurface();
                     }
+*/
                     break;
                 
                 case TouchActionType.Released:
-                    if (inProgressPaths.ContainsKey(args.Id))
-                    {
-                        // My Random Color Implementation
-                        Random rand = new Random();
-                        Byte[] rgb = new Byte[3];
-                        rand.NextBytes(rgb);
-                        paint.Color = new SKColor(rgb[0], rgb[1], rgb[2]);
-
-                        completedPaths.Add(inProgressPaths[args.Id]);
-                        inProgressPaths.Remove(args.Id);
-                        canvasView.InvalidateSurface();
-                    }
+                    if (inProgressPath == null) break;
+                    // My Random Color Implementation
+                    Random rand = new Random();
+                    Byte[] rgb = new Byte[3];
+                    rand.NextBytes(rgb);
+                    paint.Color = new SKColor(rgb[0], rgb[1], rgb[2]);
+                    Completed completed = new Completed(inProgressPath, turn ? 0 : 1);
+                    if (completedPaths == null) completedPaths = new List<Completed>();
+                    completedPaths.Add(completed);
+                    inProgressPath = null;
                     break;
 
                 case TouchActionType.Cancelled:
-                    if (inProgressPaths.ContainsKey(args.Id))
-                    {
-                        inProgressPaths.Remove(args.Id);
-                        canvasView.InvalidateSurface();
-                    }
+                    inProgressPath = null;
+                    canvasView.InvalidateSurface();
                     break;
             }
         }
@@ -192,19 +263,27 @@ using TouchTracking;
                 canvas.DrawCircle(p.center, r, p.fill ? paintAfter : paint);
                 Circle newP = new Circle (p.center, p.fill);
                 newP.center.Y += 25;
-                canvas.DrawText(num+ "", newP.center, newP.fill ? paintNumAfter : paintNumInit);
+                canvas.DrawText(circleList.IndexOf(p) + 1 + "", newP.center, newP.fill ? paintNumAfter : paintNumInit);
                 num += 1;
 
             }
 
-            foreach (SKPath path in completedPaths)
+            if (completedPaths != null)
             {
-                canvas.DrawPath(path, paint);
+                foreach (Completed c in completedPaths)
+                {
+                    canvas.DrawPath(c.path, c.player == 0 ? paintPlayer1 : paintPlayer2);
+                }
             }
 
-            foreach (SKPath path in inProgressPaths.Values)
+            if (inProgressPath != null)
             {
-                canvas.DrawPath(path, paint);
+                canvas.DrawPath(inProgressPath, turn ? paintPlayer1 : paintPlayer2);
+            }
+
+            foreach (Circle s in circleIntersections)
+            {
+                canvas.DrawCircle(s.center, r / 12, paintAfter);
             }
         }
 
