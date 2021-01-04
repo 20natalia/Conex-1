@@ -6,7 +6,7 @@
              x:Class="Conex1.DrawingPage"
             Title="Drawing Connections" >
 
-    <Grid BackgroundColor="White">
+    <Grid x:Name="BackgroundDraw" BackgroundColor="White">
     <skia:SKCanvasView x:Name="canvasView" PaintSurface="OnCanvasViewPaintSurface" />
     <Grid.Effects>
         <tt:TouchEffect Capture="True" TouchAction="OnTouchEffectAction" />

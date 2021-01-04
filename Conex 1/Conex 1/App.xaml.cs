@@ -13,7 +13,7 @@ namespace Conex_1
         {
             InitializeComponent();
 
-            MainPage = new Conex1.FramePage();
+            MainPage = new Conex1.DrawingPage();
         }
 
         protected override void OnStart()
