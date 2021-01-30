@@ -5,13 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using TouchTracking;
+using System.Diagnostics;
 
 // borrowed code for the touch screen feature, except where indicated elsewise
- namespace Conex1
+namespace Conex1
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
 
@@ -34,12 +36,33 @@ using TouchTracking;
             public Completed(SKPath p, int k) { path = p; player = k; }
         };
 
+        private class TimersOn
+        {
+            public Timer timer;
+            public Boolean onRunning;
+        };
+
         // paths finished/ the finger was lifted 
         List<Completed> completedPaths;
         List<Circle> circleList;
         List<Circle> circleIntersections = new List<Circle>();
         int radius = 0;
         Boolean turn = true;
+        int numCircles = 20;
+        SKCanvas canvas;
+
+        //Timer
+        TimersOn timer1, timer2;
+        int mins = 0, secs = 0, miliseconds = 1;
+
+        //endGame Views, B
+    
+        bool isAnimating;
+        Stopwatch stopwatch = new Stopwatch();
+        double transparency;
+        
+       
+        
 
         SKPaint paint = new SKPaint
         {
@@ -126,6 +149,35 @@ using TouchTracking;
             switch (type)
             {
                 case TouchActionType.Pressed:
+                    if (turn)
+                    {
+                        if (timer1 == null)
+                        {
+                            timer1 = new TimersOn();
+                            timer1.timer = new Timer();
+                            timer1.timer.Interval = 1; // miliseconds
+                        }
+                        if (!timer1.onRunning)
+                        {
+                            timer1.timer.Start();
+                            timer1.onRunning = true;
+                        }
+                    }
+                    else
+                    {
+                        if (timer2 == null)
+                        {
+                            timer2 = new TimersOn();
+                            timer2.timer = new Timer();
+                            timer2.timer.Interval = 1; // miliseconds
+                        }
+                        if (!timer2.onRunning)
+                        {
+                            timer2.timer.Start();
+                            timer2.onRunning = true;
+                        }
+                    }
+                    
                     if (completedPaths != null)
                     {
                         Completed last = completedPaths.Last();
@@ -142,9 +194,13 @@ using TouchTracking;
                     // adding index of circle which was touched/passed
                     SKPoint vec = inProgressPath.LastPoint - point;
                     bool cross = false;
+
                     foreach (Circle c in circleList) {
-                        //for (int i=0; i<circleList.Count(); ++i) {
-                        //Circle c = circleList[i];
+                        if (circleList.IndexOf(c) == numCircles-1 && c.fill == true)
+                        {
+                          endGameAsync();
+                          // break;
+                        }
                         if (c.fill) continue;
                         if (lineCross(point, vec, c.center))
                         {
@@ -156,6 +212,20 @@ using TouchTracking;
                                 turn = !turn;
                                 OnTouchEffectAction(TouchActionType.Pressed, point);
                                 cross = true;
+
+                                if (timer1.onRunning)
+                                {
+                                    timer1.timer.Stop();
+                                    timer1.timer.Elapsed += Timer_Elapsed;
+                                    timer1.onRunning = false;
+                                }
+                                else 
+                                {
+                                    timer2.timer.Stop();
+                                    timer2.timer.Elapsed += Timer_Elapsed;
+                                    timer2.onRunning = false;
+                                }
+                               
                                 break;
 
                             }
@@ -168,24 +238,6 @@ using TouchTracking;
                         canvasView.InvalidateSurface();
                     }
 
-/*
-                    foreach (SKPath paths in completedPaths)
-                    {
-                        SKPoint loc = ConvertToPixel(args.Location);
-                        if (paths.Contains(loc.X, loc.Y))
-                        {
-                            SKPoint s = new SKPoint();
-                            s.X = loc.X;
-                            s.Y = loc.Y;
-                            circleIntersections.Add(new Circle(s, true));
-
-                        }
-
-                        SKPath path = inProgressPaths[args.Id];
-                        path.LineTo(ConvertToPixel(args.Location));
-                        canvasView.InvalidateSurface();
-                    }
-*/
                     break;
                 
                 case TouchActionType.Released:
@@ -207,13 +259,18 @@ using TouchTracking;
                     break;
             }
         }
-   
-         SKPoint ConvertToPixel(Point pt)
+
+     
+
+
+
+        //B
+        SKPoint ConvertToPixel(Point pt)
          {
             return new SKPoint((float)(canvasView.CanvasSize.Width * pt.X / canvasView.Width),
                                (float)(canvasView.CanvasSize.Height * pt.Y / canvasView.Height));
          }
-
+        //B
         SKPoint ConvertToPixel(TouchTrackingPoint pt)
         {
             return new SKPoint((float)(canvasView.CanvasSize.Width * pt.X / canvasView.Width),
@@ -223,18 +280,19 @@ using TouchTracking;
         // drawing circles randomly at the start
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
-            SKCanvas canvas = args.Surface.Canvas;
+            canvas = args.Surface.Canvas;
             canvas.Clear();
 
             int width = args.Info.Width;
             int height = args.Info.Height;
             int r = radius = Math.Min(width, height) / 24;
+            
 
             if (circleList == null)
             {
                 Random rand2 = new Random();
                 circleList = new List<Circle>();
-                while (circleList.Count() < 20)
+                while (circleList.Count() < numCircles)
                 {
                     SKPoint p = new SKPoint();
                     p.X = rand2.Next(r, width-r);
@@ -285,36 +343,36 @@ using TouchTracking;
             {
                 canvas.DrawCircle(s.center, r / 12, paintAfter);
             }
+
+
+            
+    
+
+        }
+        // the time that has elapsed per turn, borrowed
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            miliseconds++;
+            if (miliseconds <= 1000)
+            {
+                secs = 0;
+                miliseconds = 0;
+            }
+            if (secs == 59)
+            {
+                mins++;
+                secs = 0;
+            }
+
+
+        }
+        //end Game + transparency
+        private async Task endGameAsync()
+        {
+            await Navigation.PushAsync(new FramePage());
         }
 
-        /*
-        private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
-        {
-            SKSurface surface = e.Surface;
-            SKCanvas canvas = surface.Canvas;
-
-            canvas.Clear(SKColors.CornflowerBlue);
-
-            int width = e.Info.Width;
-            int height = e.Info.Height;
-
-            SKPaint paint = new SKPaint
-            {
-                Style = SKPaintStyle.Stroke,
-                Color = Color.Red.ToSKColor(),
-                StrokeWidth = 25
-            };
-
-             canvas.DrawCircle(width / 2, height / 2, 50, paint);
-
-            /* Random rand = new Random();
-            for (int i = 1; i < 20; i++)
-            {
-                int radious = rand.Next(5, 50);
-                int cx = rand.Next(0, 100);
-                int cy = rand.Next(0, 100);
-            }
-            */
+       
 
     }
 }
