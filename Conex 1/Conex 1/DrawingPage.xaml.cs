@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
+
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -36,11 +36,7 @@ namespace Conex1
             public Completed(SKPath p, int k) { path = p; player = k; }
         };
 
-        private class TimersOn
-        {
-            public Timer timer;
-            public Boolean onRunning;
-        };
+     
 
         // paths finished/ the finger was lifted 
         List<Completed> completedPaths;
@@ -48,12 +44,10 @@ namespace Conex1
         List<Circle> circleIntersections = new List<Circle>();
         int radius = 0;
         Boolean turn = true;
-        int numCircles = 20;
+        int numCircles = 5;
         SKCanvas canvas;
-
-        //Timer
-        TimersOn timer1, timer2;
-        int mins = 0, secs = 0, miliseconds = 1;
+        long ticks = 0;
+       
 
         //endGame Views, B
     
@@ -120,8 +114,11 @@ namespace Conex1
 
         };
 
-        public DrawingPage()
+        private WelcomePage main;
+
+        public DrawingPage(WelcomePage m)
         {
+            main = m;
             InitializeComponent();
         }
 
@@ -149,33 +146,14 @@ namespace Conex1
             switch (type)
             {
                 case TouchActionType.Pressed:
-                    if (turn)
+                    if (ticks == 0)
                     {
-                        if (timer1 == null)
+                        ticks = DateTime.Now.Ticks;
+                        Device.StartTimer(TimeSpan.FromMilliseconds(20), () =>
                         {
-                            timer1 = new TimersOn();
-                            timer1.timer = new Timer();
-                            timer1.timer.Interval = 1; // miliseconds
-                        }
-                        if (!timer1.onRunning)
-                        {
-                            timer1.timer.Start();
-                            timer1.onRunning = true;
-                        }
-                    }
-                    else
-                    {
-                        if (timer2 == null)
-                        {
-                            timer2 = new TimersOn();
-                            timer2.timer = new Timer();
-                            timer2.timer.Interval = 1; // miliseconds
-                        }
-                        if (!timer2.onRunning)
-                        {
-                            timer2.timer.Start();
-                            timer2.onRunning = true;
-                        }
+                            canvasView.InvalidateSurface();
+                            return ticks != 0;
+                        });
                     }
                     
                     if (completedPaths != null)
@@ -198,8 +176,14 @@ namespace Conex1
                     foreach (Circle c in circleList) {
                         if (circleList.IndexOf(c) == numCircles-1 && c.fill == true)
                         {
-                          endGameAsync();
-                          // break;
+                            if (ticks != 0)
+                            {
+                                double s = 0.01 * Math.Floor(0.00001 * (DateTime.Now.Ticks - ticks));
+                                main.addResult("Bałwan", s);
+                                ticks = 0;
+                            }
+                            endGameAsync();
+                            return;
                         }
                         if (c.fill) continue;
                         if (lineCross(point, vec, c.center))
@@ -212,22 +196,7 @@ namespace Conex1
                                 turn = !turn;
                                 OnTouchEffectAction(TouchActionType.Pressed, point);
                                 cross = true;
-
-                                if (timer1.onRunning)
-                                {
-                                    timer1.timer.Stop();
-                                    timer1.timer.Elapsed += Timer_Elapsed;
-                                    timer1.onRunning = false;
-                                }
-                                else 
-                                {
-                                    timer2.timer.Stop();
-                                    timer2.timer.Elapsed += Timer_Elapsed;
-                                    timer2.onRunning = false;
-                                }
-                               
                                 break;
-
                             }
                             break;
 
@@ -344,36 +313,21 @@ namespace Conex1
                 canvas.DrawCircle(s.center, r / 12, paintAfter);
             }
 
-
-            
-    
-
-        }
-        // the time that has elapsed per turn, borrowed
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            miliseconds++;
-            if (miliseconds <= 1000)
+            if (ticks != 0)
             {
-                secs = 0;
-                miliseconds = 0;
-            }
-            if (secs == 59)
-            {
-                mins++;
-                secs = 0;
-            }
+                double s = 0.01 * Math.Floor(0.00001*(DateTime.Now.Ticks - ticks));
+                double m = Math.Floor(s / 60);
+                s -= 60 * m; 
 
-
+                canvas.DrawText(m + ":" + s.ToString("00.00"), 300, 50, paintNumInit);
+            }
         }
+
         //end Game + transparency
         private async Task endGameAsync()
         {
-            await Navigation.PushAsync(new FramePage());
+            await Navigation.PopAsync();
         }
-
-       
-
     }
 }
 

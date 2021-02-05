@@ -7,13 +7,18 @@
                CornerRadius="10"
                Padding="8">
             <StackLayout>
-                <Label Text="Card Example"
-                 FontSize="Medium"
+                
+                <Label Text="INSTRUCTIONS"
+                 FontSize="Large"
                        FontAttributes="Bold" />
                 <BoxView Color="Gray"
                          HeightRequest="2"
                          HorizontalOptions="Fill" />
-                <Label Text="Frames can wrap more complex layouts to create more complex UI components" />
+                <Label Text="1. Connect the dots in the game as fast as you can" />
+                <Label Text="2. If you stop drawing, you can only resume where you left off" />
+                <Label Text="3. You cannot start on 1" />
+                <Label Text="4. Play with friends" />
+                <Label Text="5. Have Fun!" />
                 <Button Text="Game Page" BackgroundColor="Blue" Clicked="NavigateButton_OnClicked" />
             </StackLayout>
             

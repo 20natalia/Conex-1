@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Conex1.WelcomePage">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal" Spacing="50">
+                <Label Text="CONEX" FontSize="40" FontAttributes="Bold" FlowDirection="LeftToRight" TextColor="DodgerBlue" HorizontalTextAlignment="Start"/>
+                <ImageButton Source="trophy.png" Clicked="ScoresButton_OnClicked" HorizontalOptions="End" VerticalOptions="CenterAndExpand"  BorderColor="DarkGoldenrod" BorderWidth="5" WidthRequest="50" HeightRequest="50"/>
+                <ImageButton Source="settings.png" Clicked="SettingsButton_OnClicked" HorizontalOptions="End" VerticalOptions="CenterAndExpand" BorderColor="DarkGoldenrod" BorderWidth="5" WidthRequest="50" HeightRequest="50" />
+            </StackLayout>
+
+            <Button Text="PLAY" Clicked="PlayButton_OnClicked" BorderWidth="5" BorderColor="Blue" BackgroundColor="White" TextColor="DarkSlateBlue" WidthRequest="200" HorizontalOptions="Center" HeightRequest="100"/>
+
+
+        </StackLayout>
+        
+       
+    </ContentPage.Content>
+</ContentPage>
