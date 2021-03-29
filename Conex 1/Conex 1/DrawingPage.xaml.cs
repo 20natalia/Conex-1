@@ -44,16 +44,16 @@ namespace Conex1
         List<Circle> circleIntersections = new List<Circle>();
         int radius = 0;
         Boolean turn = true;
-        int numCircles = 5;
+        int numCircles;
         SKCanvas canvas;
         long ticks = 0;
        
 
         //endGame Views, B
     
-        bool isAnimating;
+        //bool isAnimating;
         Stopwatch stopwatch = new Stopwatch();
-        double transparency;
+        //double transparency;
         
        
         
@@ -119,6 +119,7 @@ namespace Conex1
         public DrawingPage(WelcomePage m)
         {
             main = m;
+            numCircles = m.gID;
             InitializeComponent();
         }
 
@@ -179,7 +180,7 @@ namespace Conex1
                             if (ticks != 0)
                             {
                                 double s = 0.01 * Math.Floor(0.00001 * (DateTime.Now.Ticks - ticks));
-                                main.addResult("Bałwan", s);
+                                main.addResult(s, numCircles);
                                 ticks = 0;
                             }
                             endGameAsync();

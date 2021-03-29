@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:Conex1.ViewModel"
+             x:Class="Conex1.Views.demo1">
+
+    <ContentPage.BindingContext>
+        <local:GameIntenseViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Content>
+        <StackLayout>
+            <Picker ItemDisplayBinding="{Binding GameCNum}" x:Name="GameType" Title="Select Level" ItemsSource="{Binding GameList}" />
+            <Button Text="Click" Clicked="PickerButton_Clicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -20,6 +20,9 @@
                 <Label Text="4. Play with friends" />
                 <Label Text="5. Have Fun!" />
                 <Button Text="Game Page" BackgroundColor="Blue" Clicked="NavigateButton_OnClicked" />
+
+                <Button x:Name="ThemeButton" Text="Check Theme" Clicked="ThemeButton_Clicked" Margin="5, 5, 5, 5" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
+
             </StackLayout>
             
         </Frame>

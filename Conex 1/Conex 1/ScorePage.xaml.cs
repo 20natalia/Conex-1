@@ -14,14 +14,27 @@ namespace Conex1
     {
         //public IList<Player> Players { get; private set; }
 
-        public ScorePage()
+        private WelcomePage main;
+        public ScorePage(WelcomePage m)
         {
+            main = m;
             InitializeComponent();
         }
 
-        private void ClearButton_OnPressed(object sender, EventArgs e)
+       
+
+        public void ClearButton_OnPressed(object sender, EventArgs e)
         {
-           
+           // main.results.Clear();
+            GameType2.IsVisible = true;
+        }
+
+        public void Picker_Used2(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (GameType2.SelectedItem != null)
+            {
+                main.removeResult(int.Parse(GameType2.SelectedItem.ToString()));
+            } 
         }
     }
        

@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Conex1.ViewModel"
              x:Class="Conex1.ScorePage">
+
+    
     <StackLayout Orientation="Vertical">
         <Button Text="Clear" Clicked="ClearButton_OnPressed" BackgroundColor="MintCream" />
+        <Picker x:Name="GameType2" ItemDisplayBinding="{Binding GameCNum}" IsVisible="False"  Title="Select Level" ItemsSource="{Binding gameName}" HorizontalOptions="Center" PropertyChanged="Picker_Used2"/>
+
         <ListView ItemsSource="{Binding results}">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -15,9 +20,11 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                  <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" 
+                             
+                             <Label Grid.Column="0" 
                                  Text="{Binding Game}"
                                  FontAttributes="Italic"
                                  TextColor="Black"/>
@@ -28,7 +35,12 @@
                              <Label Grid.Column="2" 
                                   Text="{Binding Time}"
                                   VerticalOptions="End" />
-                         </Grid>
+                            <Label Grid.Column="3" 
+                                  Text="{Binding nCircles}"
+                                  VerticalOptions="End" 
+                                  TextColor="DarkGoldenrod"
+                                   HorizontalOptions="End"/>
+                        </Grid>
                      </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

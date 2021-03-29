@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:Conex1.ViewModel"
              x:Class="Conex1.WelcomePage">
+    
+  
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
             <StackLayout Orientation="Horizontal" Spacing="50">
@@ -10,11 +12,15 @@
                 <ImageButton Source="settings.png" Clicked="SettingsButton_OnClicked" HorizontalOptions="End" VerticalOptions="CenterAndExpand" BorderColor="DarkGoldenrod" BorderWidth="5" WidthRequest="50" HeightRequest="50" />
             </StackLayout>
 
-            <Button Text="PLAY" Clicked="PlayButton_OnClicked" BorderWidth="5" BorderColor="Blue" BackgroundColor="White" TextColor="DarkSlateBlue" WidthRequest="200" HorizontalOptions="Center" HeightRequest="100"/>
+            <Button x:Name="GameStart" Text="PLAY" Clicked="PickerButton_Clicked" BorderWidth="5" FontAttributes="Bold" FontSize="Large" BackgroundColor="FloralWhite" TextColor="Black" IsEnabled="False" BorderColor="MediumAquamarine" WidthRequest="200" HorizontalOptions="Center" HeightRequest="100" />
 
-
-        </StackLayout>
+           <Entry x:Name="PlayerName" Placeholder="Enter Player Name" PlaceholderColor="Olive" MaxLength="15" Completed="NameEntry_Completed" TextChanged="NameEntry_TextChanged" />
+           <Picker ItemDisplayBinding="{Binding GameCNum}" x:Name="GameType" Title="Select Level" ItemsSource="{Binding gameName}" HorizontalOptions="Center" PropertyChanged="Picker_Used"/>
+            
         
-       
+        </StackLayout>
+
+        
+
     </ContentPage.Content>
 </ContentPage>

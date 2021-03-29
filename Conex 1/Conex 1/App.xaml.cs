@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Conex1.Views;
 
 namespace Conex_1
 {
@@ -15,9 +16,10 @@ namespace Conex_1
         public App()
         {
             InitializeComponent();
-     
-          
-            MainPage = new NavigationPage(new Conex1.WelcomePage());
+
+
+          // MainPage = new demo1();
+           MainPage = new NavigationPage(new Conex1.WelcomePage());
 
             // MainPage = new Conex1.FramePage();
         }
