@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Conex1.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,6 @@ namespace Conex1
         }
 
        
-
         public void ClearButton_OnPressed(object sender, EventArgs e)
         {
            // main.results.Clear();
@@ -33,7 +33,8 @@ namespace Conex1
         {
             if (GameType2.SelectedItem != null)
             {
-                main.removeResult(int.Parse(GameType2.SelectedItem.ToString()));
+                main.removeResult((GameIntense)GameType2.SelectedItem);
+               
             } 
         }
     }

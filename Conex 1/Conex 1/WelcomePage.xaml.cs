@@ -51,12 +51,12 @@ namespace Conex1
             }); ; ; ;
         }
 
-        public void removeResult(int numCircles)
+        public void removeResult(GameIntense gameInt)
         {
                 int i = 0;
                 while (i < results.Count)
                 {
-                    if (results.ElementAt(i).nCircles == numCircles)
+                    if (results.ElementAt(i).nCircles == gameInt.GameCNum)
                     {
                         results.RemoveAt(i);
                     }

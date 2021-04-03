@@ -9,6 +9,7 @@
         <Button Text="Clear" Clicked="ClearButton_OnPressed" BackgroundColor="MintCream" />
         <Picker x:Name="GameType2" ItemDisplayBinding="{Binding GameCNum}" IsVisible="False"  Title="Select Level" ItemsSource="{Binding gameName}" HorizontalOptions="Center" PropertyChanged="Picker_Used2"/>
 
+        
         <ListView ItemsSource="{Binding results}">
             <ListView.ItemTemplate>
                 <DataTemplate>
